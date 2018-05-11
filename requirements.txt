@@ -1,0 +1,21 @@
+scikit-learn
+nltk  # in addition it is needed to download some data-packages
+numpy
+scipy
+gensim
+pywsd
+glove_python
+pandas
+pathos
+textblob
+matplotlib
+mock
+pathlib
+-e git://github.com/yonilx/libact.git#egg=libact
+-e git://github.com/yonilx/simpleai.git#egg=simpleai
+# sudo apt-get install python-tk # for manual labeling
+theano # (when installing with gpu, install libgpuarray using instructions + install pygpu)
+# for the SOTA sentiment expert
+tensorflow
+tqdm
+spacy

@@ -1,0 +1,1 @@
+from .wordnet_graph_util import get_synset_relatives
