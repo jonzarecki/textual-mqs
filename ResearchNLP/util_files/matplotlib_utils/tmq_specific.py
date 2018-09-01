@@ -27,19 +27,32 @@ def plot_all_csvs_from_file(fold_paths_file, y_axis):
     # ax = fig.add_subplot(gs[4:6, 3:9])
     # axis_list.append(ax)
 
-    fig = define_new_figure(size=(20, 8))
+    fig = define_new_figure(size=(12, 12))
     fig.set_facecolor("#FFFFFF")
 
-    gs = gridspec.GridSpec(2, 2 * 3)
+    gs = gridspec.GridSpec(3, 2 * 2)
     axis_list = []
-    for i in range(3):
+    for i in range(2):
         for j in range(1):
             ax = fig.add_subplot(gs[0, i * 2:(i + 1) * 2])
             axis_list.append(ax)
-    ax = fig.add_subplot(gs[1, 0:2])
+    for i in range(2):
+        for j in range(1):
+            ax = fig.add_subplot(gs[1, i * 2:(i + 1) * 2])
+            axis_list.append(ax)
+    ax = fig.add_subplot(gs[2, 0:2])
     axis_list.append(ax)
-    ax = fig.add_subplot(gs[1, 2:4])
-    axis_list.append(ax)
+
+    # gs = gridspec.GridSpec(2, 2 * 3)
+    # axis_list = []
+    # for i in range(3):
+    #     for j in range(1):
+    #         ax = fig.add_subplot(gs[0, i * 2:(i + 1) * 2])
+    #         axis_list.append(ax)
+    # ax = fig.add_subplot(gs[1, 0:2])
+    # axis_list.append(ax)
+    # ax = fig.add_subplot(gs[1, 2:4])
+    # axis_list.append(ax)
 
     titles = ('CMR', 'SUBJ', 'SST', 'HS', 'KS')
     fold_paths_list = file_util.readlines(fold_paths_file)
@@ -134,13 +147,18 @@ def plot_all_final_results_from_file_with_error_bars(fold_paths_file):
     save_figure_publishable(fig, os.path.dirname(fold_paths_file) + "/final_results_error_bars.png")
 
 
+# # making experiment 1's graph
 # orig_p = '/home/yonatanz/Dropbox/Research/Interesting results/balanced small train/different batch size proper AL/' \
-#          'd_measure10/core_set 10/total new sents 100/pool size 20/rand_0.25 good/'
+#          'd_measure10/core_set 10/total new sents 100/pool size 20/rand_0.25/5 OK/'
 # csvs = map(lambda i: orig_p + str(i) + "/experiment_csv_files.txt", [5, 10, 20])
 # import ResearchNLP.util_files.matplotlib_utils.tmq_specific as graph
-# graph_plot_util.plot_all_csvs_from_multiple_files(csvs, 'hello', 3, 'accuracy')
-
-# graph.plot_all_csvs_from_file(orig_p + "5/experiment_csv_files.txt", 4, 'accuracy')
+# try:
+#     reload(graph)
+# except:
+#     pass
+# # graph.graph_plot_util.plot_all_csvs_from_multiple_files(csvs, 'hello', 3, 'accuracy')
+# #
+# graph.plot_all_csvs_from_file(orig_p + "experiment_folders.txt", 'Accuracy')
 
 
 def plot_all_csvs_from_multiple_files(csv_paths_files_list, title, baseline_st_idx, y_axis):
