@@ -1,5 +1,5 @@
 scikit-learn
-nltk==3.2.5  # in addition it is needed to download some data-packages
+nltk==3.4.5  # in addition it is needed to download some data-packages
 numpy
 scipy
 gensim
