@@ -16,5 +16,5 @@ cython
 # sudo apt-get install python-tk # for manual labeling
 theano # (when installing with gpu, install libgpuarray using instructions + install pygpu)
 # for the SOTA sentiment expert
-tensorflow==0.12.0
+tensorflow==1.15.2
 tqdm
