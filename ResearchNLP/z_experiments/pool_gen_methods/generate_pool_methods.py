@@ -1,3 +1,5 @@
+import cPickle
+
 from ResearchNLP import Constants as cn
 from ResearchNLP.text_synthesis.heuristic_functions import find_heuristic
 from ResearchNLP.text_synthesis.heuristic_functions.choose_best_for_addition import choose_best_by_heuristic_template
@@ -24,6 +26,10 @@ def prepare_pools_template(pool_name, pool_gen_fun):
 def curr_pool_gen_template(heuristic_name):
     def pool_gen_fun(base_sents, base_df, col_names, total_new_sents):
         ss_type = find_heuristic(heuristic_name)()
+        ret_df = curr_pool_synthesis_from_sents(base_sents, base_df, col_names, total_new_sents=total_new_sents,
+                                                choose_bulk_method=choose_best_by_heuristic_template(ss_type))
+        with open("/home/yonatanz/Dropbox/Research/Interesting results/" + cn.data_name + "_sentences_generated.txt", "a+") as f:
+            f.writelines([sent + "\n" for sent in ret_df[cn.text_col]])
         return curr_pool_synthesis_from_sents(base_sents, base_df, col_names, total_new_sents=total_new_sents,
                                               choose_bulk_method=choose_best_by_heuristic_template(ss_type))
     return prepare_pools_template("beam search " + heuristic_name, pool_gen_fun)
@@ -69,14 +75,16 @@ def generate_pool_lecun_augmentation():
 
 
 def generate_sents_using_lstm_generator():
-    file_lstm_pool = open(CODE_DIR + 'z_experiments/init_pools/lstm-generator/' + cn.data_name + '.txt', 'r').read().splitlines()
+    file_lstm_pool = open(CODE_DIR + 'z_experiments/init_pools/lstm-generator/' + cn.data_name + '.txt', 'r').readlines()
     # file_lstm_pool = filter(lambda s: s.upper() != s.lower(), fix_sentences_encoding(file_lstm_pool))  # has characters
     file_lstm_pool = fix_sentences_encoding(file_lstm_pool)
+
+    # import pdb; pdb.set_trace()
 
     def pool_gen_fun(base_sents, base_df, col_names, total_new_sents):
         lstm_pool = set(file_lstm_pool).difference(set(base_df[col_names.text]))
         lstm_pool = list(lstm_pool)
-        assert len(lstm_pool) >= total_new_sents, "not enough sentences in tcg pool"
+        assert len(lstm_pool) >= total_new_sents, "not enough sentences in tcg pool" + str(len(lstm_pool)) + "  " + str(total_new_sents)
         chosen_idxs = combinatorics_util.random_choice_bulk([1.0] * len(lstm_pool), total_new_sents)
 
         generated_sents = map(lambda i: lstm_pool[i], chosen_idxs)
@@ -96,5 +104,6 @@ def prepare_orig_examples_pools():
         orig_pool_df = orig_labeled_pool_df.copy(deep=True)
         switch_df_tag(orig_pool_df, cn.col_names.tag, 0.0, None)
         switch_df_tag(orig_pool_df, cn.col_names.tag, 1.0, None)
+        # print orig_labeled_pool_df.groupby(cn.col_names.tag).size()
         return orig_pool_df, orig_labeled_pool_df
     return "original examples", pools_gen_fun

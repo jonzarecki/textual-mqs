@@ -1,5 +1,4 @@
 import time
-
 from glove import Glove
 
 from ResearchNLP.knowledge_bases.knowledge_base import KnowledgeBase

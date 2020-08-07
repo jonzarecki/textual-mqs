@@ -1,9 +1,9 @@
 scikit-learn
-nltk  # in addition it is needed to download some data-packages
+nltk==3.2.5  # in addition it is needed to download some data-packages
 numpy
 scipy
 gensim
-pywsd
+pywsd==1.1.7
 glove_python
 pandas
 pathos
@@ -11,11 +11,10 @@ textblob
 matplotlib
 mock
 pathlib
--e git://github.com/yonilx/libact.git#egg=libact
--e git://github.com/yonilx/simpleai.git#egg=simpleai
+cython
+
 # sudo apt-get install python-tk # for manual labeling
 theano # (when installing with gpu, install libgpuarray using instructions + install pygpu)
 # for the SOTA sentiment expert
-tensorflow
+tensorflow==0.12.0
 tqdm
-spacy

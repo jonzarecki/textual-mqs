@@ -1,9 +1,9 @@
 from libact.models import LogisticRegression
 from pandas import DataFrame, np
 
-from ResearchNLP import Constants as cn
 from ResearchNLP.text_synthesis.heuristic_functions.synthesis_state import SynState
 from ResearchNLP.util_files import ColumnNames, pandas_util, ExprScores
+from ResearchNLP import Constants as cn
 
 all_heuristics = [("train-data-gain", lambda: SynStateTrainDataGain)]
 

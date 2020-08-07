@@ -1,10 +1,9 @@
-import cPickle as pkl
 import datetime
 import os.path
 import time
-
 import numpy as np
 from matplotlib import pyplot as plt
+import cPickle as pkl
 
 from ResearchNLP import Constants as cn
 from ResearchNLP.util_files import file_util, Tee, pandas_util

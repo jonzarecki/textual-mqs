@@ -108,7 +108,7 @@ def plot_experiment_multiple_metrics(x_axis_vals, our_ys, our_labels, baselines_
         ax.set_xlabel(x_axis)
         ax.set_ylabel(type_name + " score")
         ax.legend(loc='best')
-        plt.tight_layout()
+        #plt.tight_layout()
 
 
 def plot_experiment_single_metric(x_axis_vals, our_ys, our_labels, baselines_ys, baselines_labels, title, x_axis, y_axis,
@@ -135,7 +135,7 @@ def plot_experiment_single_metric(x_axis_vals, our_ys, our_labels, baselines_ys,
         plot_minimum_maximum_classifier_performance(ax)
     fig.suptitle(title)
     fig.text(0, 0.0, prepare_footnote_text())
-    plt.tight_layout()
+    #plt.tight_layout()
 
 
 def plot_histogram(values_our, values_our_labels, values_baselines, values_baselines_lables, title, x_axis, y_axis):
@@ -151,7 +151,7 @@ def plot_histogram(values_our, values_our_labels, values_baselines, values_basel
     ax.legend(loc='best')
     fig.suptitle(title)
     fig.text(0, 0.0, prepare_footnote_text())
-    plt.tight_layout()
+    #plt.tight_layout()
 
 
 def plot_experiment_publish_format(plt_ax, x_axis_vals, our_ys, our_labels, baselines_ys, baselines_labels,
@@ -169,17 +169,19 @@ def plot_experiment_publish_format(plt_ax, x_axis_vals, our_ys, our_labels, base
                     linestyle=baseline_results_line_styles[i], linewidth=2.5, label=baselines_labels[i],
                     marker=baseline_results_markers[i], markersize=12)
 
-    plt_ax.set_xlabel(x_axis)
-    plt_ax.set_ylabel(y_axis)
+    plt_ax.xaxis.set_tick_params(labelsize=26)
+    plt_ax.yaxis.set_tick_params(labelsize=26)
+    plt_ax.set_xlabel(x_axis, fontsize=26)
+    plt_ax.set_ylabel(y_axis, fontsize=26)
     # plt_ax.legend(loc='best')
 
 
 def save_figure_publishable(fig, f_path):
     plt.figure(fig.number)
-    plt.tight_layout()
+    plt.tight_layout(pad=1.0)
     plt.draw()
     time.sleep(2)
-    fig.savefig(f_path, bbox_inches='tight', pad_inches=0, dpi=600)
+    fig.savefig(f_path, pad_inches=1.0, dpi=400)
 
 
 def extract_info_from_csv(csv_path, baseline_st_idx):

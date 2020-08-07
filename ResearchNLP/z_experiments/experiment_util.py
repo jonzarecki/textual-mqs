@@ -168,7 +168,34 @@ def label_df_with_expert(unlabeled_df, col_names, print_status=False):
         ce.load_machine_expert(col_names, cn.relevant_tags, cn.data_df)
 
     labeled_df = ce.clsExpert.classify_df(unlabeled_df)
+    # labeled_df = pandas_util.shuffle_df_rows(labeled_df)
     assert (labeled_df[col_names.text] == unlabeled_df[col_names.text]).all()
+
+    if print_status:
+        # calculate_machine_experts_accuracy()
+
+        # orig_sents_list = cn.data_df[col_names.text].tolist()
+        # generated_sents_origs = map(lambda hist: hist[-1], unlabeled_df[col_names.prev_states])
+        # orig_sent_tags = map(lambda orig: float(cn.data_df[col_names.tag][orig_sents_list.index(orig)]),
+        #                      generated_sents_origs)
+
+        print "Generated sentences:"
+        print labeled_df.groupby(col_names.tag).size()
+
+        def print_list_minimal_spaces(lst):
+            for x in lst:
+                print x,
+            print
+        # print_list_minimal_spaces(orig_sent_tags)
+        # print_list_minimal_spaces(labeled_df[col_names.tag])
+        # for idx, row in labeled_df.iterrows():
+        #     orig = orig_sent_tags[idx]
+        #     new = row[col_names.tag]
+        #     if orig != new and len(row[col_names.prev_states]) > 2:
+        #         print "orig", orig, "new", new
+        #         for s in row[col_names.prev_states]:
+        #             print s
+        #         print
 
 
     return pandas_util.all_positive_rows_df(labeled_df, col_names.tag, cn.relevant_tags)  # extract only relevant rows
@@ -204,7 +231,13 @@ def run_classifier(training_df, validation_data_df):
     """
 
     model, X_test, y_test = prepare_classifier(training_df, validation_data_df, cn.col_names)
+    # if cn.qs is None:
     y_pred = model.train_model_and_predict(X_test)
+    # else:
+    #     from ResearchNLP.text_synthesis.heuristic_functions import SynStateALHeuristic
+    #     init_extractor = SynStateALHeuristic.build_feature_extractor(validation_data_df, cn.col_names)
+    #     X_test = init_extractor.transform(validation_data_df, cn.col_names)
+    #     y_pred = cn.qs.model.predict(X_test)
 
     y_pred = y_pred.astype(float)  # bugfix
     y_test = y_test.astype(float)
@@ -226,6 +259,13 @@ def run_active_learning(trn_ds, score_function, lbr, qs, quota):
         if len(trn_ds.get_unlabeled_entries()) == 0:
             break  # finished labeling all examples
 
+        # # Standard usage of libact objects
+        # qs.update_scores_list()
+        # # shuffle order for randomality
+        # combined = list(qs.scores_dict.iteritems())
+        # # self.random_state_.shuffle(combined)
+        # unlabeled_entry_ids, score_list = zip(*combined)
+        # ask_id = unlabeled_entry_ids[np.argmin(score_list)]
         if callable(qs):
             ask_id = qs(trn_ds)
         else:

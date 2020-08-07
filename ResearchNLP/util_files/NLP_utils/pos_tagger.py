@@ -1,10 +1,12 @@
+from __future__ import unicode_literals
 import spacy
 
 from ResearchNLP.util_files import function_cache
 
+
 nlp = spacy.load('en', parser=False, entity=False, matcher=False, add_vectors=False)
-nlp.disable_pipes('ner')
-nlp.disable_pipes('parser')
+# nlp.disable_pipes('ner')
+# nlp.disable_pipes('parser')
 
 
 @function_cache.func_cache
@@ -16,9 +18,9 @@ def pos_tag_sent(sent, only_hash=False):
     :param only_hash: if set to True returns a list of ints for each POS tag (much less memory)
     """
     if not only_hash:
-        ret_list = map(lambda token: (token.text, token.pos_, token.idx), nlp(sent))
+        ret_list = map(lambda token: (token.text, token.pos_, token.idx), nlp(unicode(sent)))
     else:
-        ret_list = hash(tuple(map(lambda token: token.pos, nlp(sent))))
+        ret_list = hash(tuple(map(lambda token: token.pos, nlp(unicode(sent)))))
     return ret_list
 
 
@@ -41,7 +43,7 @@ def tokenize_sent(sent):
     """
     returns a list representing each word in the tokenized sentence
     """
-    return map(lambda token: token.lemma_, nlp(sent, disable=['tagger']))
+    return map(lambda token: token.lemma_, nlp(unicode(sent)))#, disable=['tagger']))
 
 
 def find_word_tag(tagged_sent, requested_word):

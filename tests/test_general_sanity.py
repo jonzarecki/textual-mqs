@@ -4,21 +4,22 @@ from functools import partial
 
 import numpy as np
 import pandas as pd
+
+from ResearchNLP.feature_extraction import AvgGloveExtractor
+from ResearchNLP.prediction_models import SvmModel
+from ResearchNLP.text_synthesis.heuristic_functions import SynStateTestDataGain
+from ResearchNLP.util_files import pandas_util
+from ResearchNLP.util_files.libact_utils.ideal_text_labeler import IdealTextLabeler
 from libact.models import LogisticRegression
 from libact.query_strategies import UncertaintySampling
 
 from ResearchNLP import Constants as cn
-from ResearchNLP.feature_extraction import AvgGloveExtractor
 from ResearchNLP.knowledge_bases import kb_helper
-from ResearchNLP.prediction_models import LinearModel
-from ResearchNLP.text_synthesis import sentence_generation as sg
-from ResearchNLP.text_synthesis.heuristic_functions import SynStateTestDataGain
-from ResearchNLP.util_files import pandas_util
-from ResearchNLP.util_files.libact_utils.ideal_text_labeler import IdealTextLabeler
 from ResearchNLP.util_files.libact_utils.text_dataset import TextDataset
-from ResearchNLP.z_experiments.ex_insertion_order import insert_in_AL_fashion
 from ResearchNLP.z_experiments.experiment_util import label_df_with_expert, run_classifier, run_active_learning, \
-    prepare_balanced_dataset, prepare_pool_based_dataset, prepare_trn_ds
+    prepare_balanced_dataset, prepare_pool_based_dataset, assert_ends_and_beginnings_are_the_same, prepare_trn_ds
+from ResearchNLP.text_synthesis import sentence_generation as sg
+from ResearchNLP.z_experiments.ex_insertion_order import insert_in_AL_fashion
 
 
 class TestGeneralSystem(unittest.TestCase):
@@ -31,7 +32,7 @@ class TestGeneralSystem(unittest.TestCase):
 
         # self.skipTest(reason="too long")
 
-        cn.Inner_PredictionModel = LinearModel
+        cn.Inner_PredictionModel = SvmModel
         cn.Feature_Extractor = AvgGloveExtractor
         cn.load_codementor_sentiment_analysis_parameters()
         kb_helper.load_WordNet_model()

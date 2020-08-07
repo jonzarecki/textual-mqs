@@ -3,8 +3,8 @@ from unittest import TestCase
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 
-from ResearchNLP import Constants as cn
 from ResearchNLP.feature_extraction import BOWExtractor
+from ResearchNLP import Constants as cn
 from ResearchNLP.util_files.NLP_utils.stemmer import stem_tokenize
 from ResearchNLP.util_files.column_names import pretokenize_df
 

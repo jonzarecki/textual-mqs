@@ -1,5 +1,4 @@
 import time
-
 from gensim.models.word2vec import Word2Vec
 
 from ResearchNLP.knowledge_bases import KnowledgeBase

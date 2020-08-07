@@ -1,10 +1,11 @@
 import pandas as pd
 from libact.query_strategies import RandomSampling
 
-from ResearchNLP.text_synthesis.heuristic_functions import SynStateRandom, SynStateTrainDataGain, furthest_feature_sp, \
-    train_data_gain, random_sampling, SynStateFurthestFeatureSp, SynStateTestDataGain
-from ResearchNLP.text_synthesis.heuristic_functions.heuristics.al_heuristics import SynStateVarRed, \
-    SynStateALHeuristic, var_reduction, hint_svm, quire, uncertainty_sampling
+from ResearchNLP.text_synthesis.heuristic_functions import \
+    SynStateRandom, SynStateTestDataGain, SynStateTrainDataGain, furthest_feature_sp, train_data_gain, \
+    random_sampling, SynStateFurthestFeatureSp
+from ResearchNLP.text_synthesis.heuristic_functions.heuristics.al_heuristics import \
+    SynStateALHeuristic, hint_svm, quire, uncertainty_sampling
 from ResearchNLP.util_files import ColumnNames
 from ResearchNLP.util_files.combinatorics_util import flatten_lists
 from ResearchNLP.util_files.libact_utils import TextDataset
@@ -40,7 +41,7 @@ def prepare_heuristic_fun(enriched_train_df, col_names, labeled_df=None):
                     shared_variables[str(ss_type)+"qs"] = qs
                 qs = shared_variables[str(ss_type)+"qs"]
                 prev_state.build_next_states_qs = lambda _: qs
-            elif ss_type == SynStateTestDataGain:
+             elif ss_type == SynStateTestDataGain:
                 if "en_labeled_train_df" not in shared_variables:
                     enriched_labeled_train_df = SynStateTestDataGain. \
                         label_dataframe_with_expert(enriched_train_df, col_names, labeled_df)
@@ -60,7 +61,7 @@ def prepare_heuristic_fun(enriched_train_df, col_names, labeled_df=None):
 
 def calculate_heuristic_bulk(enriched_df, col_names, ss_type, inst_idxs, labeled_df=None):
     heuristic_fun = prepare_heuristic_fun(enriched_df, col_names, labeled_df)
-    if ss_type == SynStateTrainDataGain or ss_type == SynStateVarRed:
+    if ss_type == SynStateTrainDataGain:
         # idx_score_list = map(lambda idx: (idx, heuristic_fun(idx, ss_type)), inst_idxs)
         idx_score_list = parmap(lambda idx: (idx, heuristic_fun(idx, ss_type)),
                             inst_idxs, chunk_size=10)
@@ -74,10 +75,9 @@ def calculate_heuristic_bulk(enriched_df, col_names, ss_type, inst_idxs, labeled
 
 
 all_heuristics_list = flatten_lists([
-    uncertainty_sampling.all_heuristics,
+   uncertainty_sampling.all_heuristics,
     quire.all_heuristics,
     hint_svm.all_heuristics,
-    var_reduction.all_heuristics,
     random_sampling.all_heuristics,
     train_data_gain.all_heuristics,
     furthest_feature_sp.all_heuristics
@@ -85,10 +85,9 @@ all_heuristics_list = flatten_lists([
 
 
 combined_heuristics_list = flatten_lists([
-    uncertainty_sampling.all_heuristics,
+     uncertainty_sampling.all_heuristics,
     # quire.all_heuristics,
     hint_svm.all_heuristics,
-    # var_reduction.all_heuristics,
     # random_sampling.all_heuristics,
     # train_data_gain.all_heuristics,
     # furthest_feature_sp.all_heuristics

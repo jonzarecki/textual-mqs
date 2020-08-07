@@ -1,0 +1,5 @@
+/ResearchNLP/knowledge_bases*
+/ResearchNLP/indexes*
+/ResearchNLP/experiment_data*
+*.m*
+*.pkl*

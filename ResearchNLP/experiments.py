@@ -1,17 +1,13 @@
 import gc
-import os
 
-from ResearchNLP.z_experiments.old_experiments.additional_experiments.heuristic_functions_comparison import *
-from ResearchNLP.z_experiments.old_experiments.additional_experiments.special import *
-
-from ResearchNLP.knowledge_bases import kb_helper
 from ResearchNLP.util_files import file_util, function_cache
 from ResearchNLP.util_files.combinatorics_util import get_all_possible_matchings
-from ResearchNLP.util_files.matplotlib_utils.generic import plt
 from ResearchNLP.util_files.run_experiment_util import run_several_experiments_and_normalize
+from ResearchNLP.z_experiments.old_experiments.additional_experiments.heuristic_functions_comparison import *
+from ResearchNLP.z_experiments.old_experiments.additional_experiments.special import *
 from ResearchNLP.z_experiments.main_experiments import only_small_train_balanced as smallbalanced
-from ResearchNLP.z_experiments.main_experiments.effects_of import *
 from ResearchNLP.z_experiments.main_experiments.only_small_train_balanced import *
+from ResearchNLP.z_experiments.main_experiments.effects_of import *
 
 
 def define_random_seeds(g):
@@ -24,6 +20,11 @@ def define_random_seeds(g):
     numpy.random.seed(rb)
 
 
+# partial(cn.load_mtl_16_sentiment_dataset_parameters, genre=cn.mtl_options[0]),  # [1] problematic
+# partial(cn.load_mtl_16_sentiment_dataset_parameters, genre=cn.mtl_options[2]),  # [1] problematic
+# cn.load_uci_spam_parameters,  # crashes because weird
+
+
 #######
 
 knowledge_bases = [
@@ -33,10 +34,10 @@ knowledge_bases = [
     # kb_helper.load_word2vec_model,
 ]
 data_sets = [
-    cn.load_cornell_subjectivity_parameters,
-    cn.load_cornell_sentiment_parameters,
-    cn.load_stanford_sentiment_treebank_parameters,
-    cn.load_hate_speech_parameters,
+    # cn.load_cornell_subjectivity_parameters,
+    # cn.load_cornell_sentiment_parameters,
+    # cn.load_stanford_sentiment_treebank_parameters,
+    # cn.load_hate_speech_parameters,
     cn.load_codementor_sentiment_analysis_parameters,
 ]
 init_size = 10
@@ -50,10 +51,31 @@ def experiment_with_params((run_num, (kb_load, data_set_load))):
     def run_experiment(g=0):  # used in experiment_on_data_and_save_results()
         cn.experiment_purpose = ""
         define_random_seeds(g)
+        # data_set_load(d_measure=10)
+        # cn.init_pool_size = init_size
 
         gc.collect()
+        # return test_pos_distribution()
+        # return test_percent_of_positive_generated_depending_on_dist()
+        # return insert_by_init_heuristic_functions_scores(SynStateUncertainty, SynStateRandom)
+        # return insert_in_AL_fashion_with_heuristic_funs(SynStateTrainDataGain, SynStateTestDataGain)
+        # return test_adding_random_orig_examples()
+        # return run_f1_per_addition_using_search_experiment_simult()
+        # return compare_kb_f1_per_addition_random_synthesis_sa_experiment()
+        # return compare_f1_per_addition_using_search_sa_experiment()
+        # return compare_f1_per_addition_for_each_search_algorithm()
+        # return choose_best_from_global_pool()
+        # return compare_f1_per_addition_for_2_heuristics(SynStateUncertainty, SynStateUncertainty)
+        # return compare_f1_per_addition_for_heuristic_and_competitors(SynStateTrainDataGain)
+        # return compare_pool_generation_methods_for_f1_per_addition(select_from_pool_uncertainty)
+        # return compare_pool_selection_methods_for_f1_per_addition(generate_pool_curr_pool_uncertainty)
+        # return compare_generated_pool_insertion_order()
+        # return compare_generation_methods_pools()
         return compare_pool_generation_methods_proper_al()
+        # return compare_orig_pool_insertion_order()
+        # return compare_pool_enhancement_methods()
         # return effect_of_num_of_operators()
+        # return effect_of_size_of_semantic_environment()
         # return effect_of_semantic_environment_on_label_switches()
 
     def load_expr_env():
@@ -85,7 +107,7 @@ def experiment_with_params((run_num, (kb_load, data_set_load))):
     # from ResearchNLP.text_synthesis.synthesis_algorithms.basic_tools import text_modops_util
     # ops = text_modops_util.synthesize_mod_operators_sent(u"Never tell a bitch what u up to..", cn.data_df, cn.col_names)
 
-    retval = run_several_experiments_and_normalize(run_experiment, load_expr_env, run_num, run_count=50)
+    retval = run_several_experiments_and_normalize(run_experiment, load_expr_env, run_num, run_count=5)
 
     experiment_name, table_headers, data, plot_fun, experiment_dir_abspath = retval
 
@@ -105,7 +127,7 @@ def experiment_with_params((run_num, (kb_load, data_set_load))):
                 str(smallbalanced.pool_size_each_step), str(batch_size))
         elif experiment_name == 'small_train_compare_generation_methods_pools':
             batch_experiment_folder += "balanced small train/different core set size/d_measure{0}/{1}/".format(
-                str(cn.distance_measur), str(init_size))
+                str(cn.distance_measure), str(init_size))
         else:
             batch_experiment_folder += "balanced small train/{0}/d_measure{1}/".format(
                 experiment_name, str(cn.distance_measure))

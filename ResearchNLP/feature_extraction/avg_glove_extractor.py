@@ -1,8 +1,8 @@
 import os
-import time
 
-import numpy as np
 import pandas as pd
+import numpy as np
+import time
 from glove import Glove
 
 from ResearchNLP.feature_extraction.feature_extractor import FeatureExtractor

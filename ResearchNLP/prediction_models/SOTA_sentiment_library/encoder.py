@@ -61,7 +61,7 @@ def mlstm(inputs, c, h, M, ndim, scope='lstm', wn=False):
     for idx, x in enumerate(inputs):
         m = tf.matmul(x, wmx)*tf.matmul(h, wmh)
         z = tf.matmul(x, wx) + tf.matmul(m, wh) + b
-        i, f, o, u = tf.split(z, 4, 1)
+        i, f, o, u = tf.split(1, 4, value=z)
         i = tf.nn.sigmoid(i)
         f = tf.nn.sigmoid(f)
         o = tf.nn.sigmoid(o)

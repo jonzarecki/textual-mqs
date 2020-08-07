@@ -1,48 +1,36 @@
 import csv
+import matplotlib
 import os
 import time
 
-import matplotlib
 import numpy as np
 from matplotlib import gridspec, pyplot as plt
 
 from ResearchNLP.util_files import file_util
-from .generic import define_new_figure, plot_experiment_publish_format, \
+from generic import define_new_figure, plot_experiment_publish_format, \
     share_axis_between_rows, save_figure_publishable, extract_info_from_csv, extract_info_from_expr_folder, \
     extract_std_deviation_all_exprs_data_points
+
 
 matplotlib.rcParams.update({'font.size': 12})
 
 def plot_all_csvs_from_file(fold_paths_file, y_axis):
 
-    # fig = define_new_figure(size=(15, 14))
-    # fig.set_facecolor("#FFFFFF")
-    #
-    # gs = gridspec.GridSpec(3 * 2, 4 * 3)
-    # axis_list = []
-    # for i in range(2):
-    #     for j in range(2):
-    #         ax = fig.add_subplot(gs[i * 2:(i + 1) * 2, j * 2 * 3:(j + 1) * 2 * 3])
-    #         axis_list.append(ax)
-    # ax = fig.add_subplot(gs[4:6, 3:9])
-    # axis_list.append(ax)
-
-    fig = define_new_figure(size=(12, 12))
+    fig = define_new_figure(size=(15, 14))
     fig.set_facecolor("#FFFFFF")
 
-    gs = gridspec.GridSpec(3, 2 * 2)
+    gs = gridspec.GridSpec(3 * 2, 4 * 3)
     axis_list = []
     for i in range(2):
-        for j in range(1):
-            ax = fig.add_subplot(gs[0, i * 2:(i + 1) * 2])
+        for j in range(2):
+            ax = fig.add_subplot(gs[i * 2:(i + 1) * 2, j * 2 * 3:(j + 1) * 2 * 3])
             axis_list.append(ax)
-    for i in range(2):
-        for j in range(1):
-            ax = fig.add_subplot(gs[1, i * 2:(i + 1) * 2])
-            axis_list.append(ax)
-    ax = fig.add_subplot(gs[2, 0:2])
+    ax = fig.add_subplot(gs[4:6, 0:6])
     axis_list.append(ax)
 
+    # fig = define_new_figure(size=(20, 8))
+    # fig.set_facecolor("#FFFFFF")
+    #
     # gs = gridspec.GridSpec(2, 2 * 3)
     # axis_list = []
     # for i in range(3):
@@ -60,14 +48,15 @@ def plot_all_csvs_from_file(fold_paths_file, y_axis):
         csv_path, _ = extract_info_from_expr_folder(f_path)
         x_ax, x_ax_vals, our_ys, our_lbls, baselines_ys, baselines_lbls = extract_info_from_csv(csv_path, 4)
         our_lbls = ['US-BS-MQ', 'US-HC-MQ', 'S-MQ']
-        baselines_lbls = ['IDEAL', 'WNA']
-        axis_list[f_num].set_title(titles[f_num])
+        baselines_lbls = ['IDEAL-RAND', 'WNA', 'RNN-LM']
+        axis_list[f_num].set_title(titles[f_num], fontsize=32)
         plot_experiment_publish_format(axis_list[f_num], x_ax_vals, our_ys, our_lbls,
-                                       baselines_ys, baselines_lbls, x_ax, y_axis)
+                                       baselines_ys[:-1], baselines_lbls[:-1], x_ax, y_axis)
 
-    plt.tight_layout()
+    #plt.tight_layout(pad=0.3)
     plt.legend(bbox_to_anchor=(1.3, 0.95), loc=2, prop={'size': 25})
-    save_figure_publishable(fig, os.path.dirname(fold_paths_file) + "/all_plots.pdf")
+    save_figure_publishable(fig, os.path.dirname(fold_paths_file) + "/all_plots_publish.png")  # eps the format conferences want
+    # for some reason the showed plot is different from the one saved
     plt.show()
 
 
@@ -140,25 +129,20 @@ def plot_all_final_results_from_file_with_error_bars(fold_paths_file):
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('IDEAL accuracy ratio')
     ax.set_xticklabels(('CMR', 'SUBJ', 'SST', 'HS', 'KS'))
-    plt.tight_layout()
+    #plt.tight_layout()
     ax.legend(loc='best')
     plt.show()
 
     save_figure_publishable(fig, os.path.dirname(fold_paths_file) + "/final_results_error_bars.png")
 
 
-# # making experiment 1's graph
 # orig_p = '/home/yonatanz/Dropbox/Research/Interesting results/balanced small train/different batch size proper AL/' \
-#          'd_measure10/core_set 10/total new sents 100/pool size 20/rand_0.25/5 OK/'
+#          'd_measure10/core_set 10/total new sents 100/pool size 20/rand_0.25 good/'
 # csvs = map(lambda i: orig_p + str(i) + "/experiment_csv_files.txt", [5, 10, 20])
 # import ResearchNLP.util_files.matplotlib_utils.tmq_specific as graph
-# try:
-#     reload(graph)
-# except:
-#     pass
-# # graph.graph_plot_util.plot_all_csvs_from_multiple_files(csvs, 'hello', 3, 'accuracy')
-# #
-# graph.plot_all_csvs_from_file(orig_p + "experiment_folders.txt", 'Accuracy')
+# graph_plot_util.plot_all_csvs_from_multiple_files(csvs, 'hello', 3, 'accuracy')
+
+# graph.plot_all_csvs_from_file(orig_p + "5/experiment_csv_files.txt", 4, 'accuracy')
 
 
 def plot_all_csvs_from_multiple_files(csv_paths_files_list, title, baseline_st_idx, y_axis):
@@ -186,7 +170,7 @@ def plot_all_csvs_from_multiple_files(csv_paths_files_list, title, baseline_st_i
 
     share_axis_between_rows(axis_mat, axis='y')
     axis_mat[0, 0].legend(loc='best')
-    plt.tight_layout()
+    #plt.tight_layout()
     plt.draw()
     time.sleep(2)
     plt.show()
@@ -217,7 +201,7 @@ def plot_all_csvs_from_multiple_files_split_diff_datasets(csv_paths_files_list, 
                                            baselines_ys, baselines_lbls, x_ax, y_axis)
 
     share_axis_between_rows(axis_mat, axis='y')
-    plt.tight_layout()
+    #plt.tight_layout()
 
     csv_file_paths_list = file_util.readlines(csv_paths_files_list[0])
     datasets_names = map(lambda p: os.path.splitext(os.path.basename(p))[0].split('_')[0], csv_file_paths_list)
@@ -257,7 +241,7 @@ def plot_experiment_effect_of_num_of_operators_publishable(expr_fold_path):
 
     plot_experiment_publish_format(ax, x_axis_vals, our_ys, our_labels,
                                    baselines_ys, baselines_labels, x_axis, "final accuracy")
-    plt.tight_layout()
+    #plt.tight_layout()
 
     # ax.set_ylim(0.55, 0.70)
     save_figure_publishable(fig, os.path.dirname(csv_f_path) + "/op_num_effect.pdf")
@@ -308,7 +292,7 @@ def plot_label_switch_difference_publishable(fold_paths_file):
     ax.set_ylabel('% of switched instances')
     ax.set_xticks(ind)
     ax.set_xticklabels(('CMR', 'SUBJ', 'SST', 'HS', 'KS'))
-    plt.tight_layout()
+    #plt.tight_layout()
     ax.legend(bbox_to_anchor=(0.22, 1.0), loc='upper left')
 
     def autolabel(rects, xpos='center'):
@@ -335,3 +319,9 @@ def plot_label_switch_difference_publishable(fold_paths_file):
     # print os.path.dirname(fold_paths_file) + "/label_switch.pdf"
     plt.show()
     save_figure_publishable(fig, os.path.dirname(fold_paths_file) + "/label_switch.png")
+
+
+if __name__ == '__main__':
+    orig_p = '/media/yonatanz/yz/Dropbox/Dropbox/Research_old/Interesting results/balanced small train/different batch size proper AL/d_measure10/core_set 10/total new sents 100/pool size 20/rand_0.25/5 OK (copy)/'
+    csvs = map(lambda i: orig_p + str(i) + "/experiment_csv_files.txt", [5, 10, 20])
+    plot_all_csvs_from_file(orig_p + "experiment_folders.txt", 'Accuracy')
